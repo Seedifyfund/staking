@@ -1,6 +1,8 @@
 const { assert } = require('chai');
 const truffleAssert = require('truffle-assertions');
 
+//Change the lock duration factor from 3600 to 30 before testing
+
 const Locking = artifacts.require('./IDOLocking.sol');
 const Token = artifacts.require('./Token.sol');
 
@@ -14,7 +16,7 @@ contract('Locking', (accounts) => {
     const totalSupply = 200000000000000000000;
     before(async() => {
         token = await Token.new("MineToken", "MNT", 18, totalSupply.toString(), accounts[0]);
-        instance = await Locking.new("IDO Locking", token.address, 58, 30);
+        instance = await Locking.new("IDO Locking", token.address, 58, 1);
         });
 
     describe('deployment', async() => {
@@ -43,7 +45,7 @@ contract('Locking', (accounts) => {
 
         it('has lock duration', async() => {
             const lockduration = await instance.lockDuration();
-            assert.equal(lockduration.toString(),'30')
+            assert.equal(lockduration.toString(),'1')
         })
     })
 
@@ -74,14 +76,14 @@ contract('Locking', (accounts) => {
     describe('Setting rate, lockDuration and eligibilityAmount', async() => {
 
         it('should set rate and lock duration by owner', async() => {
-            await instance.setRateAndLockduration(60, 45, {from: accounts[0]});
+            await instance.setRateAndLockduration(60, 2, {from: accounts[0]});
             const rate = await instance.rate();
             const index = await instance.index(); //Check the visibility after testing
             rate.toString().should.equal('60', "Rate set successfully by owner");
             const newRate = await instance.rates(index);
             newRate[0].toString().should.equal('60', "Rate is updated");
             const lock = await instance.lockDuration();
-            lock.toString().should.equal("45", "Lock set successfully");
+            lock.toString().should.equal("2", "Lock set successfully");
         })
 
         it('should not allow others to set rate and lock duration', async() => {
@@ -110,17 +112,26 @@ contract('Locking', (accounts) => {
             const index = await instance.index();
             deposits[0].toString().should.equal('2000000000000000000', "Staked correctly");
             deposits[3].toString().should.equal(index.toString(), "Index is set correctly");
-            deposits[4].should.equal(false, "Staked correctly");
+            deposits[5].should.equal(false, "Staked correctly");
             const stakedBalance = await instance.stakedBalance();
             stakedBalance.toString().should.equal('2000000000000000000', "Staked Balance is correct");
             const stakedTotal = await instance.stakedTotal();
             stakedTotal.toString().should.equal('2000000000000000000', "Staked total is correct");
         })
 
-        it('should not allow multiple stakes from same user', async() => {
+        it('should allow multiple stakes from same user and reset the lock', async() => {
             const stake = 1000000000000000000;
             await token.approve(instance.address, stake.toString());
-            await truffleAssert.reverts(instance.stake(stake.toString()), "Already Staked");
+            function timeout(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            await timeout(30000);
+            await instance.stake(stake.toString());
+            const deposits = await instance.userDeposits(accounts[0]);
+            deposits[0].toString().should.equal('3000000000000000000', "Staked correctly");
+            deposits[5].should.equal(false, "Staked correctly");
+            deposits[4].toString().should.equal('6400000000000000', "Updated");
+            
         })
 
         it('should stake according to the changes in rates', async() => {
@@ -129,7 +140,7 @@ contract('Locking', (accounts) => {
             const userIndex = deposits[3].toString();
             const userRate = await instance.rates(userIndex);
             rate.toString().should.equal(userRate[0].toString(), "Rates are synced1");
-            await instance.setRateAndLockduration(70, 45);
+            await instance.setRateAndLockduration(70, 2);
             const stake = 2000000000000000000;
             await token.transfer(accounts[1], stake.toString());
             await token.approve(instance.address, stake.toString(), { from: accounts[1]});
@@ -162,12 +173,8 @@ contract('Locking', (accounts) => {
         
             const stakedBalance = await instance.stakedBalance();
             const rewardBalance = await instance.rewardBalance();
-            // console.log(stakedBalance.toString(), rewardBalance.toString());
-            // const balance = await token.balanceOf(accounts[3]);
-            // console.log(balance.toString());
             const amount = await instance.userDeposits(accounts[3]);
             const depositAmount = amount[0];
-            // console.log(amount[2]);
             function timeout(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
