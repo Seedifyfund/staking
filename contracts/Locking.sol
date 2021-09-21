@@ -187,6 +187,7 @@ contract IDOLocking is Ownable {
         uint256 depositTime;
         uint256 endTime;
         uint64 userIndex;
+        uint256 rewards;
         bool paid;
     }
 
@@ -311,6 +312,7 @@ contract IDOLocking is Ownable {
             uint256,
             uint256,
             uint256,
+            uint256,
             bool
         )
     {
@@ -320,6 +322,7 @@ contract IDOLocking is Ownable {
                 deposits[user].depositTime,
                 deposits[user].endTime,
                 deposits[user].userIndex,
+                deposits[user].rewards,
                 deposits[user].paid
             );
         }
@@ -332,6 +335,7 @@ contract IDOLocking is Ownable {
      *  @dev to stake 'amount' value of tokens 
      *  once the user has given allowance to the staking contract
      */
+
     function stake(uint256 amount)
         external
         _realAddress(msg.sender)
@@ -339,30 +343,47 @@ contract IDOLocking is Ownable {
         returns (bool)
     {
         require(amount > 0, "Can't stake 0 amount");
-        require(!hasStaked[msg.sender], "Already Staked");
         return (_stake(msg.sender, amount));
     }
 
     function _stake(address from, uint256 amount) private returns (bool) {
-        if (!_payMe(from, amount)) {
-            return false;
+        require(_payMe(from, amount), "Payment failed");
+        if (!hasStaked[from]) {
+            hasStaked[from] = true;
+
+            deposits[from] = Deposits(
+                amount,
+                block.timestamp,
+                block.timestamp.add((lockDuration.mul(3600))),
+                index,
+                0,
+                false
+            );
+            totalParticipants = totalParticipants.add(1);
+        } else {
+            require(
+                block.timestamp < deposits[from].endTime,
+                "Lock expired, please withdraw and stake again"
+            );
+            uint256 newAmount = deposits[from].depositAmount.add(amount);
+            uint256 rewards = _calculate(from, block.timestamp).add(
+                deposits[from].rewards
+            );
+            deposits[from] = Deposits(
+                newAmount,
+                block.timestamp,
+                block.timestamp.add((lockDuration.mul(3600))),
+                index,
+                rewards,
+                false
+            );
         }
-
-        hasStaked[from] = true;
-
-        deposits[from] = Deposits(
-            amount,
-            block.timestamp,
-            block.timestamp.add((lockDuration.mul(3600))),
-            index,
-            false
-        );
 
         emit Staked(tokenAddress, from, amount);
 
         stakedBalance = stakedBalance.add(amount);
         stakedTotal = stakedTotal.add(amount);
-        totalParticipants = totalParticipants.add(1);
+
         return true;
     }
 
@@ -380,9 +401,10 @@ contract IDOLocking is Ownable {
     }
 
     function _withdraw(address from) private returns (bool) {
-        uint256 payOut = _calculate(from);
+        uint256 reward = _calculate(from, deposits[from].endTime);
+        reward = reward.add(deposits[from].rewards);
         uint256 amount = deposits[from].depositAmount;
-        uint256 reward = payOut.sub(amount);
+
         require(reward <= rewardBalance, "Not enough rewards");
 
         stakedBalance = stakedBalance.sub(amount);
@@ -391,7 +413,7 @@ contract IDOLocking is Ownable {
         hasStaked[from] = false;
         totalParticipants = totalParticipants.sub(1);
 
-        if (_payDirect(from, payOut)) {
+        if (_payDirect(from, amount.add(reward))) {
             emit PaidOut(tokenAddress, from, amount, reward);
             return true;
         }
@@ -435,26 +457,24 @@ contract IDOLocking is Ownable {
      * 'depositTime' - time of staking
      */
     function calculate(address from) external view returns (uint256) {
-        return _calculate(from);
+        return _calculate(from, deposits[from].endTime);
     }
 
-    function _calculate(address from) private view returns (uint256) {
+    function _calculate(address from, uint256 endTime)
+        private
+        view
+        returns (uint256)
+    {
         if (!hasStaked[from]) return 0;
-        (
-            uint256 amount,
-            uint256 depositTime,
-            uint256 endTime,
-            uint64 userIndex
-        ) = (
-                deposits[from].depositAmount,
-                deposits[from].depositTime,
-                deposits[from].endTime,
-                deposits[from].userIndex
-            );
+        (uint256 amount, uint256 depositTime, uint64 userIndex) = (
+            deposits[from].depositAmount,
+            deposits[from].depositTime,
+            deposits[from].userIndex
+        );
 
         uint256 time;
         uint256 interest;
-        uint256 _lockduration = endTime.sub(depositTime);
+        uint256 _lockduration = deposits[from].endTime.sub(depositTime);
         for (uint64 i = userIndex; i < index; i++) {
             //loop runs till the latest index/interest rate change
             if (endTime < rates[i + 1].timeStamp) {
@@ -478,12 +498,10 @@ contract IDOLocking is Ownable {
             interest = time
                 .mul(amount)
                 .mul(rates[userIndex].newInterestRate)
-                .div(_lockduration.mul(10000)); //replace with (lockduration * 10000)
-
-            amount = amount.add(interest);
+                .div(_lockduration.mul(10000));
         }
 
-        return (amount);
+        return (interest);
     }
 
     function _payMe(address payer, uint256 amount) private returns (bool) {
