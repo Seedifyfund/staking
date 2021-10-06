@@ -213,6 +213,7 @@ contract IDOLocking is Ownable {
     uint256 public lockDuration;
     string public name;
     uint256 public totalParticipants;
+    bool public isStopped;
 
     IERC20 public ERC20Interface;
 
@@ -234,6 +235,17 @@ contract IDOLocking is Ownable {
         uint256 amount_,
         uint256 reward_
     );
+
+    event RateAndLockduration(
+        uint64 index,
+        uint64 newRate,
+        uint256 lockDuration,
+        uint256 time
+    );
+
+    event RewardsAdded(uint256 rewards, uint256 time);
+
+    event StakingStopped(bool status, uint256 time);
 
     /**
      *   @param
@@ -274,6 +286,12 @@ contract IDOLocking is Ownable {
         index++;
         rates[index] = Rates(rate_, block.timestamp);
         lockDuration = lockduration_;
+        emit RateAndLockduration(index, rate_, lockduration_, block.timestamp);
+    }
+
+    function changeStakingStatus(bool _status) external onlyOwner {
+        isStopped = _status;
+        emit StakingStopped(_status, block.timestamp);
     }
 
     /**
@@ -289,13 +307,12 @@ contract IDOLocking is Ownable {
         returns (bool)
     {
         require(rewardAmount > 0, "Reward must be positive");
-
+        totalReward = totalReward.add(rewardAmount);
+        rewardBalance = rewardBalance.add(rewardAmount);
         if (!_payMe(msg.sender, rewardAmount)) {
             return false;
         }
-
-        totalReward = totalReward.add(rewardAmount);
-        rewardBalance = rewardBalance.add(rewardAmount);
+        emit RewardsAdded(rewardAmount, block.timestamp);
         return true;
     }
 
@@ -343,11 +360,11 @@ contract IDOLocking is Ownable {
         returns (bool)
     {
         require(amount > 0, "Can't stake 0 amount");
+        require(!isStopped, "Staking paused");
         return (_stake(msg.sender, amount));
     }
 
     function _stake(address from, uint256 amount) private returns (bool) {
-        require(_payMe(from, amount), "Payment failed");
         if (!hasStaked[from]) {
             hasStaked[from] = true;
 
@@ -378,11 +395,10 @@ contract IDOLocking is Ownable {
                 false
             );
         }
-
-        emit Staked(tokenAddress, from, amount);
-
         stakedBalance = stakedBalance.add(amount);
         stakedTotal = stakedTotal.add(amount);
+        require(_payMe(from, amount), "Payment failed");
+        emit Staked(tokenAddress, from, amount);
 
         return true;
     }
