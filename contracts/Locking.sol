@@ -292,7 +292,6 @@ contract IDOLocking is Ownable {
      */
     function addReward(uint256 rewardAmount)
         external
-        _realAddress(msg.sender)
         _hasAllowance(msg.sender, rewardAmount)
         returns (bool)
     {
@@ -347,7 +346,6 @@ contract IDOLocking is Ownable {
 
     function stake(uint256 amount)
         external
-        _realAddress(msg.sender)
         _hasAllowance(msg.sender, amount)
         returns (bool)
     {
@@ -398,12 +396,7 @@ contract IDOLocking is Ownable {
     /**
      * @dev to withdraw user stakings after the lock period ends.
      */
-    function withdraw()
-        external
-        _realAddress(msg.sender)
-        _withdrawCheck(msg.sender)
-        returns (bool)
-    {
+    function withdraw() external _withdrawCheck(msg.sender) returns (bool) {
         return (_withdraw(msg.sender));
     }
 
@@ -429,7 +422,6 @@ contract IDOLocking is Ownable {
 
     function emergencyWithdraw()
         external
-        _realAddress(msg.sender)
         _withdrawCheck(msg.sender)
         returns (bool)
     {
@@ -523,11 +515,6 @@ contract IDOLocking is Ownable {
         ERC20Interface = IERC20(tokenAddress);
         ERC20Interface.safeTransfer(to, amount);
         return true;
-    }
-
-    modifier _realAddress(address addr) {
-        require(addr != address(0), "Zero address");
-        _;
     }
 
     modifier _withdrawCheck(address from) {
