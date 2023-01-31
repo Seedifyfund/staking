@@ -1,0 +1,19 @@
+# Foundry
+cache/
+out/
+
+#JS
+node_modules
+.next
+build
+coverage
+
+# Import
+lib
+
+#Hardhat files
+cache_hardhat/
+artifacts/
+
+#Hardhat plugin files
+typechain-types/
