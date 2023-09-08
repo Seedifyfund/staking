@@ -4,7 +4,10 @@
 
 ### Staking
 
-- BSC: https://testnet.bscscan.com/address/0xb4b5dc840f1ae81920c36a5dfb7bd8eb15d089c3#code
+- BSC:
+  - 30days: https://testnet.bscscan.com/address/0xb4b5dc840f1ae81920c36a5dfb7bd8eb15d089c3#code
+- Sepolia:
+  - 30days: https://sepolia.etherscan.io/address/0x7fb334AA579E7F6B302661EF79aF385ad44e9733#code
 
 ### Token
 

@@ -7,7 +7,7 @@ const TOKEN_ADDR = process.env.TOKEN_ADDR;
 const RATE = process.env.RATE;
 const LOCK_DURATION = process.env.LOCK_DURATION;
 
-// npx hardhat run scripts/Locking.deploy.js --network bscTest
+// npx hardhat run scripts/IDOLocking.deploy.ts --network bscTest
 async function main() {
   const idoLocking = await ethers.deployContract("IDOLocking", [
     NAME,
