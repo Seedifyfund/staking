@@ -13,6 +13,12 @@ const mnemonic = process.env.SEED;
 const BSC_RPC = process.env.BSC_RPC;
 const BSC_KEY = process.env.BSC_KEY;
 
+const SEPOLIA_RPC = process.env.SEPOLIA_RPC;
+const ETH_KEY = process.env.ETH_KEY;
+
+const ARB_RPC = process.env.ARB_RPC;
+const ARB_KEY = process.env.ARB_KEY;
+
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
@@ -23,6 +29,18 @@ const config: HardhatUserConfig = {
     bscTest: {
       url: BSC_RPC,
       chainId: 97,
+      gasPrice: 20000000000,
+      accounts: { mnemonic },
+    },
+    sepolia: {
+      url: SEPOLIA_RPC,
+      chainId: 11155111,
+      gasPrice: 20000000000,
+      accounts: { mnemonic },
+    },
+    arbGoerli: {
+      url: ARB_RPC,
+      chainId: 421613,
       gasPrice: 20000000000,
       accounts: { mnemonic },
     },
