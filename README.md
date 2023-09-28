@@ -4,7 +4,34 @@ Both `main` and `zok-prelim-report` have been deployed on BSC mainnet:
 - Old contracts are using `zok-prelim-report` from hash `89559ba688d6ec6c19da04e3b600a84ffa2663a9` (solidity 0.8.9)
 - New contracts are using `main` from hash `161df000273e608f84f5e8e0d1ecb24b4a01f997` (solidity 0.5.16) - this should be the audited hash according to @awaitFix
 
+## Configuration
+
+Doc from agency, says:
+
+<img width="668" alt="staking-APY-lock_duration" src="https://github.com/Seedifyfund/Locked-Staking/assets/37904797/fa608eef-b21b-4674-a350-0d728c1ffc09">
+
 ## Testnet
+
+### Specific Configuration
+- `100% targeted APY` for all contracts
+- Calculating hours, expressed in days (contract is not supporting less than days and solidity does not support decimals):
+  - 1h = (1 day /24 hours) = 0.04166666667
+  - 6h = (1 day /24 hours) * 6 = 0.25
+  - etc...
+
+Use hours instead of days for testing purposes:
+- 30 days becomes 1h:
+  - `rate` = 1 = (100 * (  (1/24)  * 1) / 365) * 100 (should have been `1.1415525114` if decimals were managed correctly in the contract)
+  - `lockDuration` = 1
+- 90 days becomes 3h:
+  - `rate` = 3 (should have been `3.4246575342` if decimals were managed correctly in the contract)
+  - `lockDuration` = 3
+- 180 days becomes 6h:
+  - `rate` = 7 (should have been `6.8493150685` if decimals were managed correctly in the contract)
+  - `lockDuration` = 6
+- 270 days becomes 9h:
+  - `rate` = 10 (should have been `10.2739726027` if decimals were managed correctly in the contract)
+  - `lockDuration` = 9
 
 ### Staking
 
