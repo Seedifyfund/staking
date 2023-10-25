@@ -15,7 +15,7 @@ Doc from agency, says:
 
 **Roundup** staking APRs and rate will be used for Ethereum and Arbitrum mainnets:
 
-![days-APR-rate](https://github.com/Seedifyfund/Locked-Staking/assets/37904797/7dd69696-46bf-481e-8140-ded651d64c80)
+![days-APR-rate](https://github.com/Seedifyfund/Locked-Staking/assets/37904797/dca05685-a747-4ee7-8cf0-0b0b95c81839)
 
 ## Testnet
 
