@@ -10,6 +10,12 @@ Doc from agency, says:
 
 <img width="668" alt="staking-APY-lock_duration" src="https://github.com/Seedifyfund/Locked-Staking/assets/37904797/fa608eef-b21b-4674-a350-0d728c1ffc09">
 
+## Mainnet
+
+**Roundup** staking APRs and rate will be used for Ethereum and Arbitrum mainnets:
+
+![days-APR-rate](https://github.com/Seedifyfund/Locked-Staking/assets/37904797/7dd69696-46bf-481e-8140-ded651d64c80)
+
 ## Testnet
 
 ### Specific Configuration
