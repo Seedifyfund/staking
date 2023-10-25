@@ -1,6 +1,7 @@
 # Staking
 
 Both `main` and `zok-prelim-report` have been deployed on BSC mainnet:
+
 - Old contracts are using `zok-prelim-report` from hash `89559ba688d6ec6c19da04e3b600a84ffa2663a9` (solidity 0.8.9)
 - New contracts are using `main` from hash `161df000273e608f84f5e8e0d1ecb24b4a01f997` (solidity 0.5.16) - this should be the audited hash according to @awaitFix
 
@@ -19,15 +20,17 @@ Doc from agency, says:
 ## Testnet
 
 ### Specific Configuration
+
 - `100% targeted APY` for all contracts
 - Calculating hours, expressed in days (contract is not supporting less than days and solidity does not support decimals):
   - 1h = (1 day /24 hours) = 0.04166666667
-  - 6h = (1 day /24 hours) * 6 = 0.25
+  - 6h = (1 day /24 hours) \* 6 = 0.25
   - etc...
 
 Use hours instead of days for testing purposes:
+
 - 30 days becomes 1h:
-  - `rate` = 1 = (100 * (  (1/24)  * 1) / 365) * 100 (should have been `1.1415525114` if decimals were managed correctly in the contract)
+  - `rate` = 1 = (100 _ ( (1/24) _ 1) / 365) \* 100 (should have been `1.1415525114` if decimals were managed correctly in the contract)
   - `lockDuration` = 1
 - 90 days becomes 3h:
   - `rate` = 3 (should have been `3.4246575342` if decimals were managed correctly in the contract)
@@ -60,5 +63,5 @@ Use hours instead of days for testing purposes:
 - Sepolia: https://sepolia.etherscan.io/address/0x394847038eE56af38f3c73b227961a52f0b92b87#code
 - ARB Goerli: https://goerli.arbiscan.io/address/0x2B7CCBA0225bA5104973821e52C971C0d5882BaA#code
 
-- Arb mainnet (testing purposes): 
+- Arb mainnet (testing purposes):
   - MCKT token: https://arbiscan.io/address/0x2B7CCBA0225bA5104973821e52C971C0d5882BaA

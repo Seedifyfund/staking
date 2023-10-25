@@ -16,7 +16,6 @@ async function main() {
     LOCK_DURATION,
   ]);
 
-
   console.log(`IDOLocking deployed to ${idoLocking.address}`);
 }
 
