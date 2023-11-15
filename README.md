@@ -17,6 +17,24 @@ Doc from agency, says:
 
 ![days-APR-rate](https://github.com/Seedifyfund/Locked-Staking/assets/37904797/dca05685-a747-4ee7-8cf0-0b0b95c81839)
 
+### Addresses
+
+SFUND on both Ethereum & Arbitrum at: `0x560363BdA52BC6A44CA6C8c9B4a5FadbDa32fa60`
+
+#### Ethereum Network
+
+- ETH_30Days : https://etherscan.io/address/0x1d22275d58a836f8307c306110deafe22e360877
+- ETH_90Days : https://etherscan.io/address/0xbcc572d3f2f619b082794a96a848a23c2a752fcf
+- ETH_180Days : https://etherscan.io/address/0x453bbf5ad5011a89390a1e96042a19d5f4892754
+- ETH_270Days : https://etherscan.io/address/0x569399bfca76e7664cec6510adc75f2811be2c5c
+
+#### Arbitrum Network
+
+ARB_30Days : https://arbiscan.io/address/0x1d22275d58a836f8307c306110deafe22e360877
+ARB_90Days : https://arbiscan.io/address/0xaae4355b30e18879a12e4e22283da901af47d6cd
+ARB_180Days : https://arbiscan.io/address/0x9f07a4cf035f14c0160db2d7d94eb5a41f114805
+ARB_270 Days : https://arbiscan.io/address/0xc30be140f8ada0fdb0c97377c98ddbe8b343679a
+
 ## Testnet
 
 ### Specific Configuration
@@ -42,7 +60,7 @@ Use hours instead of days for testing purposes:
   - `rate` = 10 (should have been `10.2739726027` if decimals were managed correctly in the contract)
   - `lockDuration` = 9
 
-### Staking
+### Addresses
 
 - BSC:
   - 30days: https://testnet.bscscan.com/address/0xb4b5dc840f1ae81920c36a5dfb7bd8eb15d089c3#code
