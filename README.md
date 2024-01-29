@@ -66,23 +66,28 @@ Use hours instead of days for testing purposes:
 
 ### Testnet Addresses
 
-- BSC:
-  - 30days: https://testnet.bscscan.com/address/0xb4b5dc840f1ae81920c36a5dfb7bd8eb15d089c3#code
-  - 90days: https://testnet.bscscan.com/address/0xEa8b83aF14aE1B8845D8Bf25D4f3678657B21b80#code
-  - 180days: https://testnet.bscscan.com/address/0x5DC5186033CC3e47be092474fd55969b0FeA6B17#code
-  - 270days: https://testnet.bscscan.com/address/0x45D6bE5077859687dCA56DAD7e012C7d1A733ab7#code
-- Sepolia:
-  - 30days: https://sepolia.etherscan.io/address/0x7fb334AA579E7F6B302661EF79aF385ad44e9733#code
-  - 90 days: https://sepolia.etherscan.io/address/0xCB67DC1aABDb8AE9a22575047aEf0317f204D55a#code
-  - 180 days: https://sepolia.etherscan.io/address/0x3EC1f2d2DCedB98Ac53334C837D9f8ac93c6B469#code
-  - 270 days: https://sepolia.etherscan.io/address/0x80679EAFDf452ac6fAe6876227Bd228892175874#code
-- ARB Goerli:
-  - 30days: https://goerli.arbiscan.io/address/0x5a73bc35f5b1020b9f990442dcd7384A82C84997#code
-  - 90 days: https://goerli.arbiscan.io/address/0x394847038eE56af38f3c73b227961a52f0b92b87#code
-  - 180 days: https://goerli.arbiscan.io/address/0x53861a3EBD584Dc4A626F6284613546e1cA569aB#code
-  - 270 days: https://goerli.arbiscan.io/address/0x2C26007c52f543C89e8b3C9f16c8c762E2368668#code
+#### BSC Testnet
 
-### Token
+- BSC_TESTNET_30days: https://testnet.bscscan.com/address/0xb4b5dc840f1ae81920c36a5dfb7bd8eb15d089c3#code
+- BSC_TESTNET_90days: https://testnet.bscscan.com/address/0xEa8b83aF14aE1B8845D8Bf25D4f3678657B21b80#code
+- BSC_TESTNET_180days: https://testnet.bscscan.com/address/0x5DC5186033CC3e47be092474fd55969b0FeA6B17#code
+- BSC_TESTNET_270days: https://testnet.bscscan.com/address/0x45D6bE5077859687dCA56DAD7e012C7d1A733ab7#code
+
+#### Ethereum Sepolia
+
+- SEPOLIA_30days: https://sepolia.etherscan.io/address/0x7fb334AA579E7F6B302661EF79aF385ad44e9733#code
+- SEPOLIA_90 days: https://sepolia.etherscan.io/address/0xCB67DC1aABDb8AE9a22575047aEf0317f204D55a#code
+- SEPOLIA_180 days: https://sepolia.etherscan.io/address/0x3EC1f2d2DCedB98Ac53334C837D9f8ac93c6B469#code
+- SEPOLIA_270 days: https://sepolia.etherscan.io/address/0x80679EAFDf452ac6fAe6876227Bd228892175874#code
+
+#### Arbitrum Goerli
+
+- ARB_GOERLI_30days: https://goerli.arbiscan.io/address/0x5a73bc35f5b1020b9f990442dcd7384A82C84997#code
+- ARB_GOERLI_90 days: https://goerli.arbiscan.io/address/0x394847038eE56af38f3c73b227961a52f0b92b87#code
+- ARB_GOERLI_180 days: https://goerli.arbiscan.io/address/0x53861a3EBD584Dc4A626F6284613546e1cA569aB#code
+- ARB_GOERLI_270 days: https://goerli.arbiscan.io/address/0x2C26007c52f543C89e8b3C9f16c8c762E2368668#code
+
+### Testnet Token: Unlimited and Public Minting
 
 - BSC: https://testnet.bscscan.com/address/0x0a0fDa2921EC382b7D43e8A2Bb3524a941C767bb
 - Sepolia: https://sepolia.etherscan.io/address/0x394847038eE56af38f3c73b227961a52f0b92b87#code
