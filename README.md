@@ -11,13 +11,17 @@ Doc from agency, says:
 
 <img width="668" alt="staking-APY-lock_duration" src="https://github.com/Seedifyfund/Locked-Staking/assets/37904797/fa608eef-b21b-4674-a350-0d728c1ffc09">
 
+## Deployment
+
+To run deployment script, see comments in each deployment script: `./scripts/*.ts`.
+
 ## Mainnet
 
 **Roundup** staking APRs and rate will be used for Ethereum and Arbitrum mainnets:
 
 ![days-APR-rate](https://github.com/Seedifyfund/Locked-Staking/assets/37904797/dca05685-a747-4ee7-8cf0-0b0b95c81839)
 
-### Addresses
+### Mainnet Addresses
 
 SFUND on both Ethereum & Arbitrum at: `0x560363BdA52BC6A44CA6C8c9B4a5FadbDa32fa60`
 
@@ -60,10 +64,13 @@ Use hours instead of days for testing purposes:
   - `rate` = 10 (should have been `10.2739726027` if decimals were managed correctly in the contract)
   - `lockDuration` = 9
 
-### Addresses
+### Testnet Addresses
 
 - BSC:
   - 30days: https://testnet.bscscan.com/address/0xb4b5dc840f1ae81920c36a5dfb7bd8eb15d089c3#code
+  - 90days: https://testnet.bscscan.com/address/0xEa8b83aF14aE1B8845D8Bf25D4f3678657B21b80#code
+  - 180days: https://testnet.bscscan.com/address/0x5DC5186033CC3e47be092474fd55969b0FeA6B17#code
+  - 270days: https://testnet.bscscan.com/address/0x45D6bE5077859687dCA56DAD7e012C7d1A733ab7#code
 - Sepolia:
   - 30days: https://sepolia.etherscan.io/address/0x7fb334AA579E7F6B302661EF79aF385ad44e9733#code
   - 90 days: https://sepolia.etherscan.io/address/0xCB67DC1aABDb8AE9a22575047aEf0317f204D55a#code
