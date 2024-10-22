@@ -1,39 +1,56 @@
-import hre from "hardhat";
-import { ethers } from "hardhat";
+import hre, { ethers } from "hardhat";
 import * as dotenv from "dotenv";
 // dotenv.config();
 
-const NAME = "SWTEST 1h";
-const NAME1 = "SWTEST 4h";
-const NAME2 = "SWTEST 8h";
-const NAME3 = "SWTEST 1d";
+const names = [
+  "Staking 90 days - Seedworld",
+  "Staking 180 days - Seedworld",
+  "Staking 270 days - Seedworld",
+  "Staking 360 days - Seedworld",
+];
+const aprs = [10, 20, 25, 30];
+const days = [90, 180, 270, 360];
 
-const TOKEN_ADDR = "0x3f274117f86808D7682BB313Fa31a1583c5028Aa";
-const RATE = 1;
-const LOCK_DURATION = 0;
+const TOKEN_ADDR = "0x968bE3F7bfeF0F8eDc3c1aD90232EbB0DA0867aA"; // Seedworld
 
-// npx hardhat run scripts/IDOLocking.deploy.ts --network bscTest
+function getRate(apr: number, lockDuration: number) {
+  return (apr * lockDuration) / 365;
+}
+
+// npx hardhat run scripts/IDOLocking.deploy.ts --network arb
 async function main() {
-  for (const name of [NAME, NAME1, NAME2, NAME3]) {
-    const idoLocking = await ethers.deployContract("IDOLocking", [
+  let name: string, apr: number, lockDuration: number, rate: number, roundDownRate: number;
+  let currentBlock: number;
+  let idoLocking: any;
+  for (let i = 0; i < names.length; i++) {
+    name = names[i];
+    apr = aprs[i];
+    lockDuration = days[i];
+    rate = getRate(apr, lockDuration);
+    roundDownRate = Math.floor(rate);
+
+    name = `${name}, ${rate}% APR`;
+
+    idoLocking = await ethers.deployContract("IDOLocking", [
       name,
       TOKEN_ADDR,
-      RATE,
-      LOCK_DURATION,
+      roundDownRate,
+      lockDuration * 24,
     ]);
 
-    await idoLocking.deployTransaction.wait();
+    console.log("Waiting for 5 blocks...");
+    currentBlock = await ethers.provider.getBlockNumber();
+    while (currentBlock + 5 > (await ethers.provider.getBlockNumber())) {}
 
-    console.log(
-      `IDOLocking ${await idoLocking.name()} deployed to ${idoLocking.address}`
-    );
+    console.log(`5 blocks later, ${name} deployed to: `, idoLocking.address);
+    console.log(`round down rate: ${roundDownRate}`);
 
     await hre.run("verify:verify", {
       address: idoLocking.address,
       // see: https://hardhat.org/hardhat-runner/plugins/nomiclabs-hardhat-etherscan#using-programmatically
-      constructorArguments: [name, TOKEN_ADDR, RATE, LOCK_DURATION],
+      constructorArguments: [name, TOKEN_ADDR, rate, lockDuration * 24],
     });
-    console.log("\n\n\n");
+    console.log("\n\n");
   }
 }
 
