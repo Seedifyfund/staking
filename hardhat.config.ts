@@ -81,11 +81,11 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      arb: ARB_KEY,
-      avax: "placeholder",
+      arbitrumOne: ARB_KEY,
+      avalanche: "placeholder",
       base: BASE_KEY,
       bsc: BSC_KEY,
-      eth: ETH_KEY,
+      mainnet: ETH_KEY,
     },
     customChains: [
       {
