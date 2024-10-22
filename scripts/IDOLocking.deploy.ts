@@ -14,7 +14,7 @@ const days = [90, 180, 270, 360];
 const TOKEN_ADDR = "0x968bE3F7bfeF0F8eDc3c1aD90232EbB0DA0867aA"; // Seedworld
 
 function getRate(apr: number, lockDuration: number) {
-  return (apr * lockDuration) / 365;
+  return ((apr * lockDuration) / 365) * 100;
 }
 
 // npx hardhat run scripts/IDOLocking.deploy.ts --network arb
