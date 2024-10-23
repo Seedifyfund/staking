@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 
 import contracts from "./contractAddrs";
 
-const newOwner = "0x560363BdA52BC6A44CA6C8c9B4a5FadbDa32fa60";
+const newOwner = "0x58Ed38ed63F72DAe99e59d4790789309727DDcbf";
 
 
 // npx hardhat run scripts/IDOLocking.transferOwnership.ts --network arb

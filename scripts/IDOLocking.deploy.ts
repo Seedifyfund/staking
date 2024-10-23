@@ -29,7 +29,7 @@ async function main() {
     rate = getRate(apr, lockDuration);
     roundDownRate = Math.floor(rate);
 
-    name = `${name}, ${rate}% APR`;
+    name = `${name}, ${apr}% APR`;
 
     idoLocking = await ethers.deployContract("IDOLocking", [
       name,
