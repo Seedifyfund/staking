@@ -1,4 +1,5 @@
-pragma solidity 0.5.16;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity 0.8.9;
 
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP. Does not include
@@ -38,7 +39,7 @@ interface IERC20 {
 
 // File: openzeppelin-solidity/contracts/math/SafeMath.sol
 
-pragma solidity 0.5.16;
+pragma solidity 0.8.9;
 
 library SafeMath {
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -80,28 +81,21 @@ library SafeMath {
     }
 }
 
-pragma solidity 0.5.16;
+pragma solidity ^0.8.0;
 
-contract Context {
-    // Empty internal constructor, to prevent people from mistakenly deploying
-    // an instance of this contract, which should be used via inheritance.
-    constructor() internal {}
-
-    function _msgSender() internal view returns (address payable) {
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
         return msg.sender;
     }
 
-    function _msgData() internal view returns (bytes memory) {
-        this; // silence state mutability warning without generating bytecode
+    function _msgData() internal view virtual returns (bytes calldata) {
         return msg.data;
     }
 }
 
-// File: @openzeppelin/contracts/ownership/Ownable.sol
+pragma solidity 0.8.9;
 
-pragma solidity 0.5.16;
-
-contract Ownable is Context {
+abstract contract Ownable is Context {
     address private _owner;
 
     event OwnershipTransferred(
@@ -109,40 +103,35 @@ contract Ownable is Context {
         address indexed newOwner
     );
 
-    constructor() internal {
-        _owner = _msgSender();
-        emit OwnershipTransferred(address(0), _owner);
+    constructor() {
+        _transferOwnership(_msgSender());
     }
 
-    function owner() public view returns (address) {
+    function owner() public view virtual returns (address) {
         return _owner;
     }
 
     modifier onlyOwner() {
-        require(isOwner(), "Ownable: caller is not the owner");
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
         _;
     }
 
-    function isOwner() public view returns (bool) {
-        return _msgSender() == _owner;
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
     }
 
-    function renounceOwnership() public onlyOwner {
-        emit OwnershipTransferred(_owner, address(0));
-        _owner = address(0);
-    }
-
-    function transferOwnership(address newOwner) public onlyOwner {
-        _transferOwnership(newOwner);
-    }
-
-    function _transferOwnership(address newOwner) internal {
+    function transferOwnership(address newOwner) public virtual onlyOwner {
         require(
             newOwner != address(0),
             "Ownable: new owner is the zero address"
         );
-        emit OwnershipTransferred(_owner, newOwner);
+        _transferOwnership(newOwner);
+    }
+
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
         _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
     }
 }
 
@@ -173,7 +162,7 @@ library SafeERC20 {
     }
 }
 
-pragma solidity 0.5.16;
+pragma solidity 0.8.9;
 
 contract IDOLocking is Ownable {
     using SafeMath for uint256;
@@ -214,6 +203,7 @@ contract IDOLocking is Ownable {
     string public name;
     uint256 public totalParticipants;
     bool public isStopped;
+    uint256 public constant interestRateConverter = 10000;
 
     IERC20 public ERC20Interface;
 
@@ -252,14 +242,14 @@ contract IDOLocking is Ownable {
      *   name_ name of the contract
      *   tokenAddress_ contract address of the token
      *   rate_ rate multiplied by 100
-     *   lockduration_ duration in days
+     *   lockduration_ duration in hours
      */
     constructor(
         string memory name_,
         address tokenAddress_,
         uint64 rate_,
         uint256 lockDuration_
-    ) public Ownable() {
+    ) Ownable() {
         name = name_;
         require(tokenAddress_ != address(0), "Zero token address");
         tokenAddress = tokenAddress_;
@@ -273,8 +263,8 @@ contract IDOLocking is Ownable {
      *  Requirements:
      *  `rate_` New effective interest rate multiplied by 100
      *  @dev to set interest rates
-     *  `lockduration_' lock days
-     *  @dev to set lock duration days
+     *  `lockduration_' lock hours
+     *  @dev to set lock duration hours
      */
     function setRateAndLockduration(uint64 rate_, uint256 lockduration_)
         external
@@ -302,7 +292,6 @@ contract IDOLocking is Ownable {
      */
     function addReward(uint256 rewardAmount)
         external
-        _realAddress(msg.sender)
         _hasAllowance(msg.sender, rewardAmount)
         returns (bool)
     {
@@ -342,6 +331,8 @@ contract IDOLocking is Ownable {
                 deposits[user].rewards,
                 deposits[user].paid
             );
+        } else {
+            return (0, 0, 0, 0, 0, false);
         }
     }
 
@@ -355,7 +346,6 @@ contract IDOLocking is Ownable {
 
     function stake(uint256 amount)
         external
-        _realAddress(msg.sender)
         _hasAllowance(msg.sender, amount)
         returns (bool)
     {
@@ -406,13 +396,7 @@ contract IDOLocking is Ownable {
     /**
      * @dev to withdraw user stakings after the lock period ends.
      */
-    function withdraw() external _realAddress(msg.sender) returns (bool) {
-        require(hasStaked[msg.sender], "No stakes found for user");
-        require(
-            block.timestamp >= deposits[msg.sender].endTime,
-            "Requesting before lock time"
-        );
-        require(!deposits[msg.sender].paid, "Already paid out");
+    function withdraw() external _withdrawCheck(msg.sender) returns (bool) {
         return (_withdraw(msg.sender));
     }
 
@@ -438,16 +422,9 @@ contract IDOLocking is Ownable {
 
     function emergencyWithdraw()
         external
-        _realAddress(msg.sender)
+        _withdrawCheck(msg.sender)
         returns (bool)
     {
-        require(hasStaked[msg.sender], "No stakes found for user");
-        require(
-            block.timestamp >= deposits[msg.sender].endTime,
-            "Requesting before lock time"
-        );
-        require(!deposits[msg.sender].paid, "Already paid out");
-
         return (_emergencyWithdraw(msg.sender));
     }
 
@@ -499,7 +476,7 @@ contract IDOLocking is Ownable {
             } else {
                 time = rates[i + 1].timeStamp.sub(depositTime);
                 interest = amount.mul(rates[i].newInterestRate).mul(time).div(
-                    _lockduration.mul(10000)
+                    _lockduration.mul(interestRateConverter)
                 );
                 amount = amount.add(interest);
                 depositTime = rates[i + 1].timeStamp;
@@ -514,7 +491,7 @@ contract IDOLocking is Ownable {
             interest = time
                 .mul(amount)
                 .mul(rates[userIndex].newInterestRate)
-                .div(_lockduration.mul(10000));
+                .div(_lockduration.mul(interestRateConverter));
         }
 
         return (interest);
@@ -540,8 +517,12 @@ contract IDOLocking is Ownable {
         return true;
     }
 
-    modifier _realAddress(address addr) {
-        require(addr != address(0), "Zero address");
+    modifier _withdrawCheck(address from) {
+        require(hasStaked[from], "No stakes found for user");
+        require(
+            block.timestamp >= deposits[from].endTime,
+            "Requesting before lock time"
+        );
         _;
     }
 
