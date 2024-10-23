@@ -2,12 +2,8 @@ import hre, { ethers } from "hardhat";
 import * as dotenv from "dotenv";
 // dotenv.config();
 
-const contracts = [
-  "0xa1bfa531FB91F70266EB46ddb7efACDa5834eacE", // 90d
-  "0x6E42F30e5163eeDcd329247574d432658c03B1C1", // 180d
-  "0x2c0a82ba4Bd2869ba720937BFd6c59C2CB9bf33b", // 270d
-  "0x90c5DaCE72DC178Ba8908173aDDC7d493F2b24B6", // 360d
-];
+import contracts from "./contractAddrs";
+
 const aprs = [10, 20, 25, 30];
 const days = [90, 180, 270, 360];
 
@@ -20,8 +16,8 @@ async function main() {
   let name: string, apr: number, lockDuration: number, rate: number, roundDownRate: number;
   let idoLocking: any;
 
-  for (let i = 0; i < contracts.length; i++) {
-    idoLocking = contracts[i];
+  for (let i = 0; i < contracts[hre.network.name].length; i++) {
+    idoLocking = contracts[hre.network.name][i];
     apr = aprs[i];
     lockDuration = days[i];
     rate = getRate(apr, lockDuration);
