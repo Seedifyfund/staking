@@ -1,9 +1,6 @@
 # Staking
 
-Both `main` and `zok-prelim-report` have been deployed on BSC mainnet:
-
-- Old contracts are using `zok-prelim-report` from hash `89559ba688d6ec6c19da04e3b600a84ffa2663a9` (solidity 0.8.9)
-- New contracts are using `main` from hash `161df000273e608f84f5e8e0d1ecb24b4a01f997` (solidity 0.5.16) - this should be the audited hash according to @awaitFix
+Production is using [`161df000273e608f84f5e8e0d1ecb24b4a01f997` hash](https://github.com/Seedifyfund/staking/commit/161df000273e608f84f5e8e0d1ecb24b4a01f997) and should be the audited hash according to @awaitFix
 
 ## Configuration
 
